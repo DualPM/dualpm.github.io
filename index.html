@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>DualPM: Dual Posed-Canonical Point Maps for 3D Shape and Pose Reconstruction</title>
+    <meta name="description" content="DualPM: Dual Posed-Canonical Point Maps for 3D Shape and Pose Reconstruction">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="all,follow">
+    <!-- Bootstrap CSS-->
+    <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">
+    <!-- Font Awesome CSS-->
+    <link rel="stylesheet" href="vendor/font-awesome/css/font-awesome.min.css">
+    <!-- Google fonts - Roboto-->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,700">
+    <!-- Bootstrap Select-->
+    <link rel="stylesheet" href="vendor/bootstrap-select/css/bootstrap-select.min.css">
+    <!-- owl carousel-->
+    <link rel="stylesheet" href="vendor/owl.carousel/assets/owl.carousel.css">
+    <link rel="stylesheet" href="vendor/owl.carousel/assets/owl.theme.default.css">
+    <!-- theme stylesheet-->
+    <link rel="stylesheet" href="css/style.oxfordblue.css" id="theme-stylesheet">
+    <!-- model-viewer -->
+    <link rel="stylesheet" href="css/model-viewer.css">
+    <!-- Custom stylesheet - for your changes-->
+    <link rel="stylesheet" href="css/custom.css">
+    <!-- Favicon and apple touch icons-->
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="57x57" href="img/apple-touch-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="img/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="img/apple-touch-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="img/apple-touch-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="img/apple-touch-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="img/apple-touch-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="img/apple-touch-icon-152x152.png">
+    <!-- Tweaks for older IEs--><!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script><![endif]-->
+    <style>
+      #demo-container {
+        width: 100%;
+        height: 500px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="all">
+
+      <section class="bar bg-white no-mb padding-small">
+        <div data-animate="fadeInUpBig" class="container">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="heading-light text-center mb-medium">
+                <h1>DualPM: Dual Posed-Canonical Point Maps
+                  for 3D Shape and Pose Reconstruction</h1>
+              </div>
+              <p class="lead text-md-center">
+                <a href="#">Ben Kaye</a><sup>*, 1</sup>,
+                <a href="http://www.robots.ox.ac.uk/~tomj/">Tomas Jakab</a><sup>*, 1</sup>,
+                <a href="https://elliottwu.com/">Shangzhe Wu</a><sup>2</sup>,
+                <a href="https://chrirupp.github.io/">Christian Rupprecht</a><sup>1</sup>,
+                <a href="https://www.robots.ox.ac.uk/~vedaldi/">Andrea Vedaldi</a><sup>1</sup>
+                <br>
+                <sup>1</sup>University of Oxford,
+                <sup>2</sup>Stanford University
+                <br>
+                <span class="smaller">(* equal contribution)</span>
+              </p>
+              
+              <p class="lead">
+                <div class="row text-center no-space">
+                  <div class="col-md-12">
+                    <div class="img-fluid embed-responsive embed-responsive-16by9">
+                      <video controls autoplay loop muted inline playsinline >
+                        <source src="img/teaser.mp4" type="video/mp4">
+                      </video>
+                    </div>
+                  </div>
+                </div>
+              </p>
+
+              <p class="lead">
+                We introduce <strong>Dual Point Maps (DualPM)</strong>, which reduce key tasks in the analysis of deformable objects to mapping an image of an object to its Dual Point Maps—a pair of <strong>point maps</strong> defined in <strong>camera</strong> space and <strong>canonical</strong> space.
+                DualPMs are easy to predict with a neural network, enabling effective <strong>3D object reconstruction</strong> and facilitating geometric tasks such as <strong>3D keypoint</strong> detection, <strong>3D viewpoint</strong> estimation, fitting a <strong>3D skeleton</strong>, and performing <strong>animation</strong> and <strong>motion transfer</strong>.
+              </p>
+
+              <div class="see-more text-center">
+                <p class="buttons lead">
+                  <a href="http://arxiv.org/abs/2304.10535" class="btn btn-template-outlined">Paper</a>
+                  <a href="#section-bibtex" class="btn btn-template-outlined">BibTeX</a>
+                </p>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="bar bg-white mb-0 padding-small">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-12">
+              <h2>Approach</h2>
+              <img src="img/method.webp" alt="" class="img-fluid image1 mb-small">
+              <p class="lead mb-small"> 
+                Our method first predicts a <strong>canonical point map</strong> from strong image features.  
+                Conditioned on these features, it then predicts a <strong>posed point map</strong>.  
+                This sequential prediction framework helps the model generalize, as each step focuses on solving an easier sub-task.  
+                The resulting canonical and posed point maps are in correspondence, with the pose represented by the flow between them, which can subsequently be used for various downstream tasks.                  
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="bar bg-white mb-0 padding-small">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-12">
+              <h2>Training</h2>
+              <p class="lead mb-small"> 
+                Our method is highly data-efficient as it is trained using synthetic data generated from only a <strong>single 3D model</strong> of a horse.  
+                Despite this, it generalizes remarkably well to real-world images and also to unseen classes of quadruped animals.
+              </p>
+              <img src="img/training.webp" alt="" class="img-fluid image1 mb-small">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="bar bg-white mb-0 padding-small">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-12">
+              <h2>Single-view 3D Reconstruction</h2>
+              <div class="mb-medium">
+                <p class="lead mb-small">
+                  DualPM reconstructs a wide range of shapes within the object category, capturing <strong>fine details</strong> such as ears and legs, despite not being trained on any real images.  
+                  For visualization, we color each point with its coordinate in the canonical space.                                  
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="row text-center">
+            <div class="col-md-6 mb-small">
+              <div class="row">
+                <div class="col-6">
+                  <img src="img/examples/2008_008193_1_rgb.jpg" alt="" class="img-fluid image">
+                </div>
+                <div class="col-6">
+                  <model-viewer src="img/examples-lod0/2008_008193_1_pcan.glb" loading="lazy" reveal="manual" camera-controls auto-rotate tone-mapping="neutral" shadow-intensity="1" style="width: 100%; height: 100%;" poster="img/examples-lod0/2008_008193_1_pcan.webp">
+                    <div class="btn btn-template-outlined btn-load">Load 3D Model</div>
+                  </model-viewer> 
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 mb-small">
+              <div class="row">
+                <div class="col-6">
+                  <img src="img/examples/2008_002589_2_rgb.jpg" alt="" class="img-fluid image">
+                </div>
+                <div class="col-6">
+                  <model-viewer src="img/examples-lod0/2008_002589_2_pcan.glb" loading="lazy" reveal="manual" camera-controls auto-rotate tone-mapping="neutral" shadow-intensity="1" style="width: 100%; height: 100%;" poster="img/examples-lod0/2008_002589_2_pcan.webp">
+                    <div class="btn btn-template-outlined btn-load">Load 3D Model</div>
+                  </model-viewer> 
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row text-center">
+            <div class="col-md-6 mb-small">
+              <div class="row">
+                <div class="col-6">
+                  <img src="img/examples/2008_005166_2_rgb.jpg" alt="" class="img-fluid image">
+                </div>
+                <div class="col-6">
+                  <model-viewer src="img/examples-lod0/2008_005166_2_pcan.glb" loading="lazy" reveal="manual" camera-controls auto-rotate tone-mapping="neutral" shadow-intensity="1" style="width: 100%; height: 100%;" poster="img/examples-lod0/2008_005166_2_pcan.webp">
+                    <div class="btn btn-template-outlined btn-load">Load 3D Model</div>
+                  </model-viewer> 
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 mb-small">
+              <div class="row">
+                <div class="col-6">
+                  <img src="img/examples/2008_004911_1_rgb.jpg" alt="" class="img-fluid image">
+                </div>
+                <div class="col-6">
+                  <model-viewer src="img/examples-lod0/2008_004911_1_pcan.glb" loading="lazy" reveal="manual" camera-controls auto-rotate tone-mapping="neutral" shadow-intensity="1" style="width: 100%; height: 100%;" poster="img/examples-lod0/2008_004911_1_pcan.webp">
+                    <div class="btn btn-template-outlined btn-load">Load 3D Model</div>
+                  </model-viewer> 
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row text-center">
+            <div class="col-md-6 mb-small">
+              <div class="row">
+                <div class="col-6">
+                  <img src="img/examples/2009_003572_1_rgb.jpg" alt="" class="img-fluid image">
+                </div>
+                <div class="col-6">
+                  <model-viewer src="img/examples-lod0/2009_003572_1_pcan.glb" loading="lazy" reveal="manual" camera-controls auto-rotate tone-mapping="neutral" shadow-intensity="1" style="width: 100%; height: 100%;" poster="img/examples-lod0/2009_003572_1_pcan.webp">
+                    <div class="btn btn-template-outlined btn-load">Load 3D Model</div>
+                  </model-viewer> 
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 mb-small">
+              <div class="row">
+                <div class="col-6">
+                  <img src="img/examples/2010_005919_1_rgb.jpg" alt="" class="img-fluid image">
+                </div>
+                <div class="col-6">
+                  <model-viewer src="img/examples-lod0/2010_005919_1_pcan.glb" loading="lazy" reveal="manual" camera-controls auto-rotate tone-mapping="neutral" shadow-intensity="1" style="width: 100%; height: 100%;" poster="img/examples-lod0/2010_005919_1_pcan.webp">
+                    <div class="btn btn-template-outlined btn-load">Load 3D Model</div>
+                  </model-viewer> 
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+          
+      <section class="bar bg-white mb-0 padding-small">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-12">
+              <h2>Animation</h2>
+              <div class="mb-medium">
+                <p class="lead mb-small">
+                  DualPM allows us to fit a 3D articulated skeleton to the predictions and animate the models with motion retargeting.
+                </p>
+              </div>
+            </div>
+          </div>
+      
+          <div class="row text-center">
+            <div class="col-md-6 mb-small">
+              <div class="row">
+                <div class="col-6">
+                  <img src="img/examples/2008_008193_1_rgb.jpg" alt="" class="img-fluid image">
+                </div>
+                <div class="col-6">
+                  <model-viewer src="img/anims-lod0/anim_2008_008193_1.glb" loading="lazy" reveal="manual" camera-controls autoplay auto-rotate tone-mapping="neutral" shadow-intensity="1" style="width: 100%; height: 100%;" poster="img/anims-lod0/anim_2008_008193_1.webp">
+                    <div class="btn btn-template-outlined btn-load">Load 3D Model</div>
+                  </model-viewer> 
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 mb-small">
+              <div class="row">
+                <div class="col-6">
+                  <img src="img/examples/2010_005919_1_rgb.jpg" alt="" class="img-fluid image">
+                </div>
+                <div class="col-6">
+                  <model-viewer src="img/anims-lod0/anim_2010_005919_1.glb" loading="lazy" reveal="manual" camera-controls autoplay auto-rotate tone-mapping="neutral" shadow-intensity="1" style="width: 100%; height: 100%;" poster="img/anims-lod0/anim_2010_005919_1.webp">
+                    <div class="btn btn-template-outlined btn-load">Load 3D Model</div>
+                  </model-viewer> 
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+
+      <section class="bar bg-white mb-0 padding-small">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-12">
+              <h2>Zero-shot Generalization</h2>
+              <div class="mb-medium">
+                <p class="lead mb-small">
+                  DualPM generalizes to unseen quadrupeds.
+                </p>
+              </div>
+            </div>
+          </div>
+      
+          <div class="row text-center">
+            <div class="col-md-6 mb-small">
+              <div class="row">
+                <div class="col-6">
+                  <img src="img/ood/2009_003510_1_rgb.jpg" alt="" class="img-fluid image">
+                </div>
+                <div class="col-6">
+                  <model-viewer src="img/ood-lod0/2009_003510_1_pcan.glb" loading="lazy" reveal="manual" camera-controls auto-rotate tone-mapping="neutral" shadow-intensity="1" style="width: 100%; height: 100%;" poster="img/ood-lod0/2009_003510_1_pcan.webp">
+                    <div class="btn btn-template-outlined btn-load">Load 3D Model</div>
+                  </model-viewer> 
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 mb-small">
+              <div class="row">
+                <div class="col-6">
+                  <img src="img/ood/2009_004171_1_rgb.jpg" alt="" class="img-fluid image">
+                </div>
+                <div class="col-6">
+                  <model-viewer src="img/ood-lod0/2009_004171_1_pcan.glb" loading="lazy" reveal="manual" camera-controls auto-rotate tone-mapping="neutral" shadow-intensity="1" style="width: 100%; height: 100%;" poster="img/ood-lod0/2009_004171_1_pcan.webp">
+                    <div class="btn btn-template-outlined btn-load">Load 3D Model</div>
+                  </model-viewer> 
+                </div>
+              </div>
+            </div>
+          </div>  
+        </div>
+      </section>
+          
+
+      <section class="bar bg-white mb-0 padding-small">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-12">
+              <h2 class="no-mb">Paper</h2>
+              <a href="http://arxiv.org/abs/2304.10535">
+                <div class="box-image no-mt">
+                  <img src="img/paper_montage.webp" alt="paper thumbnail" class="img-fluid image1">
+                  <div class="overlay d-flex align-items-center justify-content-center"><span class="btn btn-template-outlined-white"><i class="fa fa-chain"> </i> arXiv Preprint</a></div>
+                </div>
+              </a>
+            </div>
+
+            <div class="col-md-12">
+              <h3 id="section-bibtex">BibTeX</h2>
+<pre>
+@Article{kaye2024dualpm,
+    title={{DualPM}: Dual {Posed-Canonical} Point Maps for {3D} Shape and Pose Reconstruction},
+    author={Kaye, Ben and Jakab, Tomas and Wu, Shangzhe and Rupprecht, Christian and Vedaldi, Andrea},
+    journal={arXiv preprint arXiv:dddd.ddddd},
+    year={2024},
+}
+</pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      <section class="bar bg-white no-mb padding-big text-center-sm filler">
+      </section>
+      <!-- FOOTER -->
+      <footer class="main-footer bg-white">
+        <div class="copyrights bg-white">
+          <div class="container">
+            <div class="row">
+              <div class="col-lg-4 text-center-md">
+                <!-- <p>&copy; 2021. Tomas Jakab</p> -->
+              </div>
+              <div class="col-lg-8 text-right text-center-md">
+                <p>Template design by <a href="https://bootstrapious.com/free-templates">Bootstrapious Templates </a></p>
+                <!-- Please do not remove the backlink to us unless you support further theme's development at https://bootstrapious.com/donate. It is part of the license conditions. Thank you for understanding :)-->
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+    <!-- Javascript files-->
+    <!-- Script for model-viewer helper-->
+    <script src="js/model-viewer-helper.js"></script>
+    <!-- Loads <model-viewer> for browsers: -->
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
+    <!-- Bootstrap JS-->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/popper.js/umd/popper.min.js"> </script>
+    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="vendor/jquery.cookie/jquery.cookie.js"> </script>
+    <script src="vendor/waypoints/lib/jquery.waypoints.min.js"> </script>
+    <script src="vendor/jquery.counterup/jquery.counterup.min.js"> </script>
+    <script src="vendor/owl.carousel/owl.carousel.min.js"></script>
+    <script src="vendor/owl.carousel2.thumbs/owl.carousel2.thumbs.min.js"></script>
+    <script src="js/jquery.parallax-1.1.3.js"></script>
+    <script src="vendor/bootstrap-select/js/bootstrap-select.min.js"></script>
+    <script src="vendor/jquery.scrollto/jquery.scrollTo.min.js"></script>
+    <script src="js/front.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.4.0/dist/tf.min.js"></script>
+  </body>
+</html>
