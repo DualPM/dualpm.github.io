@@ -104,9 +104,17 @@
               <h2>Approach</h2>
               <img src="img/method.webp" alt="" class="img-fluid image1 mb-small">
               <p class="lead mb-small"> 
-                Our method first predicts a <strong>canonical point map</strong> from strong image features.  
-                Conditioned on these features, it then predicts a <strong>posed point map</strong>.  
-                This sequential prediction framework helps the model generalize, as each step focuses on solving an easier sub-task.  
+                We carefuly design the network architecture with the emphasis on generalization.
+                Each part of the model focuses on solving an easier sub-task.
+              </p>
+              <p class="lead mb-small"> 
+                Our method first predicts a <strong>canonical point map</strong> from strong image features by translating the feature image to an image of canonical points.
+                Conditioned on these, it then predicts a <strong>posed point map</strong> images.
+              </p>
+              <p class="lead mb-small"> 
+                The canonical and posed point map images, referred to as <em>layered point maps</em>, can be then translated into point maps using the predicted opacities for each pixel
+              </p>
+              <p class="lead mb-small"> 
                 The resulting canonical and posed point maps are in correspondence, with the pose represented by the flow between them, which can subsequently be used for various downstream tasks.                  
               </p>
             </div>
